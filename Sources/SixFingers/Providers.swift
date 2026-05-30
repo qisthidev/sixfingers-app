@@ -95,7 +95,7 @@ private func geminiGenerate(prompt: String, rawPrompt: String, key: String) asyn
     ]
     let data = try JSONSerialization.data(withJSONObject: body)
 
-    var req = URLRequest(url: URL(string: "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image:generateContent?key=\(key)")!)
+    var req = URLRequest(url: URL(string: "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=\(key)")!)
     req.httpMethod = "POST"
     req.setValue("application/json", forHTTPHeaderField: "Content-Type")
     req.httpBody = data
