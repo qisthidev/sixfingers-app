@@ -95,7 +95,10 @@ private func geminiGenerate(prompt: String, rawPrompt: String, key: String) asyn
     ]
     let data = try JSONSerialization.data(withJSONObject: body)
 
-    var req = URLRequest(url: URL(string: "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=\(key)")!)
+    var comps = URLComponents(string: "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent")
+    comps?.queryItems = [URLQueryItem(name: "key", value: key)]
+    guard let url = comps?.url else { throw NSError(domain: "", code: 3, userInfo: [NSLocalizedDescriptionKey: "Invalid Gemini URL"]) }
+    var req = URLRequest(url: url)
     req.httpMethod = "POST"
     req.setValue("application/json", forHTTPHeaderField: "Content-Type")
     req.httpBody = data
