@@ -95,13 +95,19 @@ private func geminiGenerate(prompt: String, rawPrompt: String, key: String) asyn
     ]
     let data = try JSONSerialization.data(withJSONObject: body)
 
-    var req = URLRequest(url: URL(string: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=\(key)")!)
+    var req = URLRequest(url: URL(string: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=\(key)")!)
     req.httpMethod = "POST"
     req.setValue("application/json", forHTTPHeaderField: "Content-Type")
     req.httpBody = data
 
     let (resData, _) = try await URLSession.shared.data(for: req)
     let json = try JSONSerialization.jsonObject(with: resData) as? [String: Any]
+
+    // Surface API-level errors (invalid key, model not found, etc.)
+    if let error = json?["error"] as? [String: Any],
+       let message = error["message"] as? String {
+        throw NSError(domain: "", code: 3, userInfo: [NSLocalizedDescriptionKey: "Gemini: \(message)"])
+    }
 
     if let candidates = json?["candidates"] as? [[String: Any]],
        let content = candidates.first?["content"] as? [String: Any],
